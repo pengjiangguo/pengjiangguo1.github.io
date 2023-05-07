@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1285156",
+      "name": "ico密码",
+      "font_class": "icomima",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    }
+  ]
+}
