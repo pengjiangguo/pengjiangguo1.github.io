@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录界面</title>
-    <link rel="stylesheet" href="./登录/style.css">
-    <link rel="stylesheet" href="./font_gih03m44dtp/iconfont.css">
-    <link rel="stylesheet" href="./font_hqxbgt54czu/iconfont.css">
-    <script src="./登录/jquery-2.1.1.min.js"></script>
-    <script src="./login.js"></script>
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="content">
-        <!-- <form action="" method="get"> -->
-            <div class="zhuce">
-                <span>登录</span>
-            </div>
-            <div class="yonghu">
-                <span style="color: white;position: relative;left: -5px;">用户：</span>
-                <div class="yonghu-item">
-                    <div class="icon">
-                        <span class="iconfont icon-yonghu"></span>
-                    </div>
-                    <input id="username" type="text" style="height: 5px;">
-                </div>
-            </div>
-            <div class="password">
-                <span style="color: white;position: relative;left: -5px;">密码：</span>
-                <div class="password-item">
-                    <div class="icon1">
-                        <span class="iconfont icon-icomima"></span>
-                    </div>
-                    <input type="password" name="" id="pass1" style="height: 10px;">
-                </div>
-            </div>
-            <div class="dlinput">
-                <button type="submit" value="登录" style="width: 110px;" id="btn_login" onclick="login()">登录</button>
-            </div>
-            <div class="bottZW">
-                <a href="">注册</a>
-                <a href="">忘记密码?</a>
-            </div>
-        <!-- </form> -->
-    </div>
+    <script type="module">
+        import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
+        import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/loaders/GLTFLoader.js';
+
+        let scene, camera, renderer;
+
+        const init = () => {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color('black');
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(60, aspect, 0.01, 5000);
+            camera.position.y = (90 / 180) * Math.PI;
+            camera.position.set(0, 0, 6);
+
+            const ambientLight = new THREE.AmbientLight(0xaaaaaa, 10);
+            scene.add(ambientLight);
+
+            // const ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.5);
+            // scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 5);
+            pointLight.position.set(0, 10, 0);
+            scene.add(pointLight);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.addEventListener("change", () => {
+                renderer.render(scene, camera)
+            });
+
+            const loader = new GLTFLoader();
+            loader.load("./monkey04.glb", (result) => {
+                result.scene.traverse((child) => {
+                    if (child.isMesh) {
+                        const geometry = child.geometry;
+                        if (geometry.isBufferGeometry) {
+                            geometry.computeVertexNormals();
+                        }
+                    }
+                });
+                scene.add(result.scene);
+                animate();
+            });
+        };
+
+        const animate = () => {
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        };
+
+        init();
+    </script>
 </body>
+
 </html>
