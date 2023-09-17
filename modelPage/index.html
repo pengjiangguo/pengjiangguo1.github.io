@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
+        import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/loaders/GLTFLoader.js';
+
+        let scene, camera, renderer;
+
+        const init = () => {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color('black');
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(60, aspect, 0.01, 5000);
+            camera.position.y = (90 / 180) * Math.PI;
+            camera.position.set(0, 0, 6);
+
+            const ambientLight = new THREE.AmbientLight(0xaaaaaa, 10);
+            scene.add(ambientLight);
+
+            // const ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.5);
+            // scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 5);
+            pointLight.position.set(0, 10, 0);
+            scene.add(pointLight);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.addEventListener("change", () => {
+                renderer.render(scene, camera)
+            });
+
+            const loader = new GLTFLoader();
+            loader.load("./monkey04.glb", (result) => {
+                result.scene.traverse((child) => {
+                    if (child.isMesh) {
+                        const geometry = child.geometry;
+                        if (geometry.isBufferGeometry) {
+                            geometry.computeVertexNormals();
+                        }
+                    }
+                });
+                scene.add(result.scene);
+                animate();
+            });
+        };
+
+        const animate = () => {
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        };
+
+        init();
+    </script>
+</body>
+
+</html>
